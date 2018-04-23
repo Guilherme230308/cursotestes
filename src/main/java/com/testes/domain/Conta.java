@@ -9,33 +9,45 @@ import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.JoinColumn;
-import javax.persistence.JoinColumns;
 import javax.persistence.JoinTable;
 import javax.persistence.ManyToMany;
 
 import com.fasterxml.jackson.annotation.JsonManagedReference;
 
 @Entity
-public class Categoria implements Serializable {
+public class Conta implements Serializable {
 
 	private static final long serialVersionUID = 1L;
 
 	@Id
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
 	private Integer id;
-	private String descricao;
+	private String nome;
+	private Double valor;
 
-	@JsonManagedReference
-	@ManyToMany(mappedBy="categorias")
-	private List<Conta> contas = new ArrayList<>();
+	@ManyToMany
+	@JoinTable(name = "CONTA_CATEGORIA", 
+	joinColumns = @JoinColumn(name = "conta_id"), 
+	inverseJoinColumns = @JoinColumn(name = "categoria_id")
+	)
+	private List<Categoria> categorias = new ArrayList<>();
 
-	public Categoria() {
+	public Conta() {
 	}
 
-	public Categoria(Integer id, String descricao) {
+	public Conta(Integer id, String nome, Double valor) {
 		super();
 		this.id = id;
-		this.setDescricao(descricao);
+		this.nome = nome;
+		this.valor = valor;
+	}
+
+	public Double getValor() {
+		return valor;
+	}
+
+	public void setValor(Double valor) {
+		this.valor = valor;
 	}
 
 	public Integer getId() {
@@ -46,20 +58,20 @@ public class Categoria implements Serializable {
 		this.id = id;
 	}
 
-	public String getDescricao() {
-		return descricao;
+	public String getNome() {
+		return nome;
 	}
 
-	public void setDescricao(String descricao) {
-		this.descricao = descricao;
+	public void setNome(String nome) {
+		this.nome = nome;
 	}
 
-	public List<Conta> getContas() {
-		return contas;
+	public List<Categoria> getCategorias() {
+		return categorias;
 	}
 
-	public void setContas(List<Conta> contas) {
-		this.contas = contas;
+	public void setCategorias(List<Categoria> categorias) {
+		this.categorias = categorias;
 	}
 
 	@Override
@@ -78,7 +90,7 @@ public class Categoria implements Serializable {
 			return false;
 		if (getClass() != obj.getClass())
 			return false;
-		Categoria other = (Categoria) obj;
+		Conta other = (Conta) obj;
 		if (id == null) {
 			if (other.id != null)
 				return false;
